@@ -69,11 +69,12 @@ const Carousel = () => {
                 // renderer.clear(true, true);
                 renderer.setScissorTest(true);
 
-                const transform = `translateY(${window.scrollY}px)`;
-                renderer.domElement.style.transform = transform;
+                // const transform = `translateY(${window.scrollY}px)`;
+                // renderer.domElement.style.transform = transform;
                 
                 // Calculating rect as per the divElement dimensions.
-                const rect = divElement.getBoundingClientRect();
+                const element = scene.userData.element;
+                const rect = element.getBoundingClientRect();
 
                 const { left, right, top, bottom, width, height } = rect;
 

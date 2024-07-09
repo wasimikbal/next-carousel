@@ -31,7 +31,6 @@ const ProductContainer: React.FC<props> = ({ scenesRef }) => {
         // Scene init
         const scene = new THREE.Scene();
         scene.add(model);
-        console.log(model);
 
         // Camera
         const camera = new THREE.PerspectiveCamera(
@@ -95,8 +94,7 @@ const ProductContainer: React.FC<props> = ({ scenesRef }) => {
 
         }
 
-        scenesRef?.current.push({ scene, renderFun });
-
+        scenesRef?.current.push({ scene, divContainer, renderFun });
     }, [model]);
 
 
