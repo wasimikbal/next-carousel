@@ -44,3 +44,71 @@ body{
   margin: 10px;
   background-color: thistle;
 }
+
+.dialog {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-close-button {
+  position: absolute;
+  border: 2px;
+  border-color: black;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.dialog-canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+
+
+
+
+
+.tooltip {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  position: relative;
+  transform: translateY(-10px);
+  opacity: 0;
+  transition-duration: 0.2s;
+  transition-property: opacity, transform;
+}
+
+.tooltip::after {
+  position: absolute;
+  background-color: black;
+  content: '';
+  width: 20px;
+  height: 20px;
+  top: 90%;
+  left: 50%;
+  transform: rotateZ(45deg) translateX(-50%);
+  z-index: -1;
+}
+
+.hide {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.show {
+  opacity: 1;
+  transform: translateY(0px);
+}

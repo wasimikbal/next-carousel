@@ -1,37 +1,12 @@
+import Carousel from './components/Carousel';
+import ConfigDialogClient from './components/ConfigDialogClient';
 
-import { Carousel } from "./components";
-import styles from "./page.module.css";
-
-export default function Home() {
+const Home: React.FC = () => {
   return (
     <>
-      <div className="ph">
-
-      </div>
-      <div className="ph">
-      <Carousel />
-
-      </div>
-
-
-      <div className="ph">
-
-      </div>
-
-
-      <div className="ph">
-
-      </div>
-
-
-      <div className="ph">
-
-      </div>
-
-
-      <div className="ph">
-
-      </div>
+      <ConfigDialogClient />
     </>
   );
-}
+};
+
+export default Home;
