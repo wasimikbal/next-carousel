@@ -49,7 +49,7 @@ const ConfigDialog = ({ isOpen, onClose }) => {
         labelRenderer.domElement.style.position = "absolute";
         labelRenderer.domElement.style.top = "0px";
         labelRenderer.domElement.style.pointerEvents = "none";
-        document.body.appendChild(labelRenderer.domElement);
+        dialogRef.current.appendChild(labelRenderer.domElement);
 
         const bannerSize = { width: canvasRef.current.clientWidth, height: canvasRef.current.clientHeight }
         const scene = new THREE.Scene();
@@ -78,27 +78,22 @@ const ConfigDialog = ({ isOpen, onClose }) => {
         const rayLine = new THREE.Line(rayGeometry, rayMaterial);
         scene.add(rayLine);
 
-        const intersectionSphere = new THREE.Mesh(
-            new THREE.SphereGeometry(1),
-            new THREE.MeshBasicMaterial({ color: 0x0000ff })
-        );
-        scene.add(intersectionSphere);
-
-        const meshRight = createCubeMesh("Foam right", 0, 0, 0);
-        const meshLeft = createCubeMesh("Foam left", 0, 0, 0);
-        const group = new THREE.Object3D;
-        group.add(meshLeft);
-        group.add(meshRight);
-
-        window.addEventListener("mousedown", (e) => {
-
-            mousePosition.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mousePosition.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        // const intersectionSphere = new THREE.Mesh(
+        //     new THREE.SphereGeometry(1),
+        //     new THREE.MeshBasicMaterial({ color: 0x0000ff })
+        // );
+        // scene.add(intersectionSphere);
 
 
+        window.addEventListener("mousemove", (e) => {
 
+            mousePosition.x = (e.clientX / dialogRef.current.clientWidth) * 2 - 1;
+            mousePosition.y = -(e.clientY / dialogRef.current.clientHeight) * 2 + 1;
+
+
+            console.log(mousePosition)
             raycaster.setFromCamera(mousePosition, camera);
-
+            raycaster.layers.set(2);
             const intersects = raycaster.intersectObjects(scene.children, true);
 
             if (intersects.length > 0) {
@@ -114,7 +109,7 @@ const ConfigDialog = ({ isOpen, onClose }) => {
                 cPointLabel.position.set(obj.position.x, obj.position.y + 0.8, obj.position.z);
                 p.textContent = `${obj.name}`;
 
-                intersectionSphere.position.copy(intersect.point);
+                cPointLabel.position.copy({ ...intersect.point, y: intersect.point.y + 10 });
             } else {
                 p.className = "tooltip hide";
             }
@@ -122,19 +117,27 @@ const ConfigDialog = ({ isOpen, onClose }) => {
 
 
         const modelLoader = new GLTFLoader();
-        modelLoader.load('/headphones.glb', (gltf) => {
+        modelLoader.load('/model_edt.glb', (gltf) => {
             const loadedModel = gltf.scene;
             loadedModel.position.set(0, -5, 0);
-            loadedModel.scale.set(0.05, 0.05, 0.05);
-            loadedModel.add(group);
-
-            meshRight.scale.set(1 / 0.05, 1 / 0.05, 1 / 0.05);
-            meshRight.rotation.set(0, Math.PI / 2, 0);
-            meshRight.position.set(0, 0, 0);
-
-            meshLeft.scale.set(1 / 0.05, 1 / 0.05, 1 / 0.05);
-            meshLeft.rotation.set(0, Math.PI / 2, 0);
-            meshLeft.position.set(-300, 0, 0);
+            loadedModel.scale.set(10, 10, 10);
+            // loadedModel.traverse((child) => {
+            //     if (child.isMesh) { // Check if the child is a mesh
+            //         if (child.name === '<child_object_name>') { // Replace with the actual name of the child object
+            //             child.layers.set(<layer_number>); // Replace with the desired layer number
+            //         }
+            //     }
+            // });
+            console.log(loadedModel);
+            loadedModel.traverse((child)=>{
+                if(child.name === "Empty"){
+                    child.layers.set(2);
+                    child.traverse((descendant) => {
+                        descendant.layers.set(2);
+                        camera.layers.enable(2);
+                    });
+                }
+            });
 
             scene.add(loadedModel);
             setModel(loadedModel);
@@ -168,6 +171,13 @@ const ConfigDialog = ({ isOpen, onClose }) => {
         };
 
         animate();
+
+        return () => {
+            dialogRef.current.removeChild(labelRenderer.domElement);
+            scene.remove(cPointLabel);
+            scene.remove(rayLine);
+            renderer.dispose();
+        };
 
     }, [canvasRef]);
 
